@@ -1,78 +1,151 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&family=Nunito+Sans:wght@400;600&display=swap');
+
 body {
-    font-family: 'Comic Sans MS', sans-serif;
-    background-color: #ffe6f2;
+    font-family: 'Nunito Sans', sans-serif;
+    background-color: #eef3e6;
+    background-image:
+        radial-gradient(circle at 8% 12%, rgba(143, 174, 102, 0.18) 0, transparent 45%),
+        radial-gradient(circle at 92% 85%, rgba(58, 90, 64, 0.12) 0, transparent 40%);
     margin: 20px;
-    color: #333;
+    color: #2f3b2a;
 }
 
 h1, h2 {
-    color: #ff3385;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    color: #3a5a40;
     text-align: center;
 }
 
+h1::after {
+    content: "🌿";
+    display: block;
+    font-size: 0.5em;
+    margin-top: 4px;
+}
+
 .form-container {
-    background-color: #fff0f5;
-    border: 2px solid #ff99cc;
+    background-color: #f6faf1;
+    border: 2px solid #8fae66;
     padding: 20px;
-    border-radius: 10px;
+    border-radius: 24px 8px 24px 8px;
     margin-bottom: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 6px 14px rgba(58, 90, 64, 0.12);
 }
 
 .form-container input {
     width: 97.5%;
     padding: 10px;
     margin: 5px 0;
-    border: 1px solid #ff99cc;
-    border-radius: 5px;
+    border: 1px solid #8fae66;
+    border-radius: 8px;
+    font-family: 'Nunito Sans', sans-serif;
+    background-color: #ffffff;
 }
 
-.form-container button {
-    background-color: #ff66b2;
+.form-container input:focus {
+    outline: 2px solid #3a5a40;
+    outline-offset: 1px;
+}
+
+.form-container button,
+.product-actions button {
+    background-color: #3a5a40;
     color: #fff;
     padding: 10px 20px;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    transition: background-color 0.15s ease, transform 0.15s ease;
 }
 
-.form-container button:hover {
-    background-color: #ff3385;
+.form-container button:hover,
+.product-actions button:hover {
+    background-color: #2d4632;
+    transform: translateY(-1px);
 }
 
 .product {
-    background-color: #fff0f5;
-    border: 2px solid #ff99cc;
+    background-color: #f6faf1;
+    border: 2px solid #8fae66;
     padding: 15px;
-    margin-bottom: 10px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 14px;
+    border-radius: 8px 24px 8px 24px;
+    box-shadow: 0 6px 14px rgba(58, 90, 64, 0.12);
 }
 
 .product h3 {
-    color: #ff66b2;
+    font-family: 'Quicksand', sans-serif;
+    color: #3a5a40;
+    margin-bottom: 2px;
+}
+
+.product h3::before {
+    content: "🪴 ";
 }
 
 .product p {
     margin: 5px 0;
 }
 
-.product img {
-    width: 45%;
-    display: block;
-    border-radius: 5px;
+/* Growth gallery: side by side on wider screens, stacked on narrow ones */
+.product-images {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 10px 0;
 }
 
-.product button {
-    background-color: #ff66b2;
-    color: #fff;
-    padding: 5px 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+.product-images img {
+    flex: 1 1 140px;
+    max-width: 200px;
+    width: auto;
+    border-radius: 6px 16px 6px 16px;
+    border: 1px solid #c9dab3;
+    object-fit: cover;
+    aspect-ratio: 1 / 1;
+}
+
+@media (max-width: 480px) {
+    .product-images {
+        flex-direction: column;
+    }
+    .product-images img {
+        max-width: 100%;
+        width: 100%;
+        aspect-ratio: 4 / 3;
+    }
+}
+
+.product-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
     margin-top: 10px;
 }
 
-.product button:hover {
-    background-color: #ff3385;
+.product-actions button,
+.add-photo-label {
+    font-size: 0.9em;
+    padding: 8px 14px;
+}
+
+.add-photo-label {
+    background-color: #c17a45;
+    color: #fff;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.add-photo-label:hover {
+    background-color: #a5642f;
+    transform: translateY(-1px);
 }

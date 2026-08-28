@@ -10,6 +10,7 @@ const bucketName = 'hannahs-arts-crafts-images';
 const healthPath = '/health';
 const productPath = '/product';
 const productsPath = '/products';
+const productImagePath = '/product/image';
 
 exports.handler = async function(event) {
   console.log('Request event: ', event);
@@ -26,6 +27,10 @@ exports.handler = async function(event) {
       break;
     case event.httpMethod === 'POST' && event.path === productPath:
       response = await saveProduct(JSON.parse(event.body));
+      break;
+    case event.httpMethod === 'POST' && event.path === productImagePath:
+      const imageRequestBody = JSON.parse(event.body);
+      response = await addProductImage(imageRequestBody.productId, imageRequestBody.imageType);
       break;
     case event.httpMethod === 'PATCH' && event.path === productPath:
       const requestBody = JSON.parse(event.body);
@@ -77,18 +82,24 @@ async function scanDynamoRecords(scanParams, itemArray) {
   }
 }
 
+// Each product now stores an `images` array (instead of a single `image` string)
+// so a growth-progression gallery can be built up over time. Every image lives
+// under a `${productId}/${timestamp}.${ext}` S3 key so uploads never collide.
 async function saveProduct(requestBody) {
   const productId = requestBody.productId || Math.floor(Math.random() * 1000).toString();
-  const imageType = requestBody.imageType || 'jpg'; 
+  const imageType = requestBody.imageType || 'jpg';
   const contentType = imageType === 'png' ? 'image/png' : 'image/jpeg';
+  const timestamp = Date.now();
+  const imageKey = `${productId}/${timestamp}.${imageType}`;
 
   const s3Params = {
     Bucket: bucketName,
-    Key: `${productId}.${imageType}`,
-    Expires: 60 * 5, 
+    Key: imageKey,
+    Expires: 60 * 5,
     ContentType: contentType
   };
   const uploadURL = s3.getSignedUrl('putObject', s3Params);
+  const imageUrl = `https://${bucketName}.s3.amazonaws.com/${imageKey}`;
 
   const params = {
     TableName: dynamodbTableName,
@@ -97,7 +108,7 @@ async function saveProduct(requestBody) {
       name: requestBody.name,
       price: requestBody.price,
       description: requestBody.description,
-      image: `https://${bucketName}.s3.amazonaws.com/${productId}.${imageType}` 
+      images: [{ url: imageUrl, timestamp: timestamp }]
     }
   };
 
@@ -106,11 +117,56 @@ async function saveProduct(requestBody) {
       Operation: 'SAVE',
       Message: 'SUCCESS',
       Item: params.Item,
-      uploadURL: uploadURL 
+      uploadURL: uploadURL
     };
     return buildResponse(200, body);
   }, (error) => {
     console.error('Console Log Error Handling: ', error);
+    return buildResponse(500, { Message: 'FAILED', error: error.message });
+  });
+}
+
+// Appends a new growth photo to an existing product's `images` list.
+// Returns a fresh presigned upload URL; the client PUTs the file to it directly.
+async function addProductImage(productId, imageType) {
+  const type = imageType || 'jpg';
+  const contentType = type === 'png' ? 'image/png' : 'image/jpeg';
+  const timestamp = Date.now();
+  const imageKey = `${productId}/${timestamp}.${type}`;
+
+  const s3Params = {
+    Bucket: bucketName,
+    Key: imageKey,
+    Expires: 60 * 5,
+    ContentType: contentType
+  };
+  const uploadURL = s3.getSignedUrl('putObject', s3Params);
+  const imageUrl = `https://${bucketName}.s3.amazonaws.com/${imageKey}`;
+
+  const params = {
+    TableName: dynamodbTableName,
+    Key: {
+      'productId': productId
+    },
+    UpdateExpression: 'SET images = list_append(if_not_exists(images, :emptyList), :newImage)',
+    ExpressionAttributeValues: {
+      ':newImage': [{ url: imageUrl, timestamp: timestamp }],
+      ':emptyList': []
+    },
+    ReturnValues: 'UPDATED_NEW'
+  };
+
+  return await dynamodb.update(params).promise().then((response) => {
+    const body = {
+      Operation: 'ADD_IMAGE',
+      Message: 'SUCCESS',
+      UpdatedAttributes: response,
+      uploadURL: uploadURL
+    };
+    return buildResponse(200, body);
+  }, (error) => {
+    console.error('Console Log Error Handling: ', error);
+    return buildResponse(500, { Message: 'FAILED', error: error.message });
   });
 }
 
