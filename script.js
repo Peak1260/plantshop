@@ -1,4 +1,4 @@
-const apiUrl = 'https://yk6ghkfer4.execute-api.us-west-1.amazonaws.com/prod';
+const apiUrl = 'https://yk6ghkfer4.execute-api.us-west-1.amazonaws.com/sbx';
 
 function generateProductId() {
     return Math.floor(Math.random() * 1000);
