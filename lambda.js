@@ -10,7 +10,7 @@ const bucketName = 'hannahs-arts-crafts-images';
 const healthPath = '/health';
 const productPath = '/product';
 const productsPath = '/products';
-const productImagePath = '/product/image';
+const productImagePath = '/product/Image';
 
 exports.handler = async function(event) {
   console.log('Request event: ', event);

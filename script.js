@@ -103,7 +103,7 @@ async function addGrowthPhoto(productId, fileInput) {
     const fileType = file.type.split('/')[1];
 
     try {
-        const response = await fetch(`${apiUrl}/product/image`, {
+        const response = await fetch(`${apiUrl}/product/Image`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
