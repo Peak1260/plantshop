@@ -1,5 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&family=Nunito+Sans:wght@400;600&display=swap');
 
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+:root {
+    /* Shared corner treatment so cards, inputs, buttons, and photos all read as one family */
+    --organic-radius: 20px 8px 20px 8px;
+}
+
 body {
     font-family: 'Nunito Sans', sans-serif;
     background-color: #eef3e6;
@@ -18,6 +27,7 @@ h1, h2 {
 }
 
 h1::after {
+    content: "🌿";
     display: block;
     font-size: 0.5em;
     margin-top: 4px;
@@ -27,13 +37,13 @@ h1::after {
     background-color: #f6faf1;
     border: 2px solid #8fae66;
     padding: 20px;
-    border-radius: 24px 8px 24px 8px;
+    border-radius: var(--organic-radius);
     margin-bottom: 20px;
     box-shadow: 0 6px 14px rgba(58, 90, 64, 0.12);
 }
 
 .form-container input {
-    width: 97.5%;
+    width: 100%;
     padding: 10px;
     margin: 5px 0;
     border: 1px solid #8fae66;
@@ -71,7 +81,7 @@ h1::after {
     border: 2px solid #8fae66;
     padding: 15px;
     margin-bottom: 14px;
-    border-radius: 8px 24px 8px 24px;
+    border-radius: var(--organic-radius);
     box-shadow: 0 6px 14px rgba(58, 90, 64, 0.12);
 }
 
@@ -99,13 +109,13 @@ h1::after {
 }
 
 .product-images img {
-    flex: 1 1 140px;
-    max-width: 200px;
+    flex: 1 1 150px;
+    max-width: 220px;
     width: auto;
-    border-radius: 6px 16px 6px 16px;
+    border-radius: var(--organic-radius);
     border: 1px solid #c9dab3;
     object-fit: cover;
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 3 / 4;
 }
 
 @media (max-width: 480px) {
@@ -115,7 +125,17 @@ h1::after {
     .product-images img {
         max-width: 100%;
         width: 100%;
-        aspect-ratio: 4 / 3;
+        aspect-ratio: 3 / 4;
+    }
+
+    .product-actions {
+        flex-direction: column;
+    }
+
+    .product-actions button,
+    .add-photo-label {
+        width: 100%;
+        justify-content: center;
     }
 }
 
