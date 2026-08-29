@@ -20,7 +20,14 @@ async function fetchProducts() {
 function displayProducts(products) {
     const productList = document.getElementById('productList');
     productList.innerHTML = '';
-    products.forEach(product => {
+
+    const sortedProducts = [...products].sort((a, b) => {
+        const nameA = (a.name || '').toLowerCase();
+        const nameB = (b.name || '').toLowerCase();
+        return nameA.localeCompare(nameB);
+    });
+
+    sortedProducts.forEach(product => {
         const productElement = document.createElement('div');
         productElement.className = 'product';
 
