@@ -13,9 +13,9 @@
     <div class="form-container">
         <h2>Add a New Plant</h2>
         <form id="productForm">
-            <input type="text" id="productName" placeholder="Plant Name" required><br>
-            <input type="number" id="productPrice" placeholder="Plant Price" required><br>
-            <input type="text" id="productDescription" placeholder="Plant Description" required><br>
+            <input type="text" id="productName" placeholder="Product Name" required><br>
+            <input type="number" id="productPrice" placeholder="Product Price" required><br>
+            <input type="text" id="productDescription" placeholder="Product Description" required><br>
             <input type="file" id="productImage" accept="image/*" required><br>
             <button type="submit">Add Plant</button>
         </form>
@@ -23,6 +23,16 @@
 
     <h2>Plant Collection</h2>
     <div id="productList"></div>
+
+    <div id="confirmModal" class="modal-overlay hidden">
+        <div class="modal-box">
+            <p id="confirmModalMessage">Are you sure?</p>
+            <div class="modal-actions">
+                <button id="confirmModalCancel" class="modal-btn-cancel">Cancel</button>
+                <button id="confirmModalConfirm" class="modal-btn-confirm">Delete</button>
+            </div>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>

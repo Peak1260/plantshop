@@ -32,6 +32,10 @@ exports.handler = async function(event) {
       const imageRequestBody = JSON.parse(event.body);
       response = await addProductImage(imageRequestBody.productId, imageRequestBody.imageType);
       break;
+    case event.httpMethod === 'DELETE' && event.path === productImagePath:
+      const deleteImageBody = JSON.parse(event.body);
+      response = await deleteProductImage(deleteImageBody.productId, deleteImageBody.imageUrl);
+      break;
     case event.httpMethod === 'PATCH' && event.path === productPath:
       const requestBody = JSON.parse(event.body);
       response = await modifyProduct(requestBody.productId, requestBody.updateKey, requestBody.updateValue);
@@ -162,6 +166,66 @@ async function addProductImage(productId, imageType) {
       Message: 'SUCCESS',
       UpdatedAttributes: response,
       uploadURL: uploadURL
+    };
+    return buildResponse(200, body);
+  }, (error) => {
+    console.error('Console Log Error Handling: ', error);
+    return buildResponse(500, { Message: 'FAILED', error: error.message });
+  });
+}
+
+// Removes a single photo from a product's `images` list, and deletes the
+// matching object from S3. DynamoDB lists can't be filtered server-side by
+// value, so this reads the item, filters the array in memory, and writes
+// the whole (shorter) list back.
+async function deleteProductImage(productId, imageUrl) {
+  const getParams = {
+    TableName: dynamodbTableName,
+    Key: {
+      'productId': productId
+    }
+  };
+
+  const getResult = await dynamodb.get(getParams).promise().catch((error) => {
+    console.error('Console Log Error Handling: ', error);
+    return null;
+  });
+
+  const item = getResult && getResult.Item;
+  if (!item || !item.images) {
+    return buildResponse(404, { Message: 'Product or image not found' });
+  }
+
+  const imageToDelete = item.images.find((img) => img.url === imageUrl);
+  const remainingImages = item.images.filter((img) => img.url !== imageUrl);
+
+  const updateParams = {
+    TableName: dynamodbTableName,
+    Key: {
+      'productId': productId
+    },
+    UpdateExpression: 'SET images = :images',
+    ExpressionAttributeValues: {
+      ':images': remainingImages
+    },
+    ReturnValues: 'UPDATED_NEW'
+  };
+
+  return await dynamodb.update(updateParams).promise().then(async (response) => {
+    if (imageToDelete) {
+      const key = imageToDelete.url.split(`${bucketName}.s3.amazonaws.com/`)[1];
+      if (key) {
+        await s3.deleteObject({ Bucket: bucketName, Key: key }).promise().catch((error) => {
+          // The DB record is already updated at this point; log and move on
+          // rather than fail the whole request over an orphaned S3 object.
+          console.error('S3 delete error: ', error);
+        });
+      }
+    }
+    const body = {
+      Operation: 'DELETE_IMAGE',
+      Message: 'SUCCESS',
+      UpdatedAttributes: response
     };
     return buildResponse(200, body);
   }, (error) => {

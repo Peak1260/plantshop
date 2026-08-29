@@ -114,6 +114,16 @@ h1, h2 {
     border: 1px solid #c9dab3;
     object-fit: cover;
     aspect-ratio: 3 / 4;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.product-images img.pressing {
+    transform: scale(0.94);
+    opacity: 0.75;
 }
 
 @media (max-width: 480px) {
@@ -165,4 +175,73 @@ h1, h2 {
 .add-photo-label:hover {
     background-color: #a5642f;
     transform: translateY(-1px);
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(47, 59, 42, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+.modal-overlay.hidden {
+    display: none;
+}
+
+.modal-box {
+    background: #f6faf1;
+    border: 2px solid #8fae66;
+    border-radius: var(--organic-radius);
+    padding: 24px;
+    max-width: 320px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+}
+
+.modal-box p {
+    margin: 0 0 18px;
+    color: #2f3b2a;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.modal-btn-cancel,
+.modal-btn-confirm {
+    padding: 8px 18px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    transition: background-color 0.15s ease;
+}
+
+.modal-btn-cancel {
+    background-color: #d8e4c8;
+    color: #2f3b2a;
+}
+
+.modal-btn-cancel:hover {
+    background-color: #c9dab3;
+}
+
+.modal-btn-confirm {
+    background-color: #a63d3d;
+    color: #fff;
+}
+
+.modal-btn-confirm:hover {
+    background-color: #8a3131;
 }
