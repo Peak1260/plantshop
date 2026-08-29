@@ -6,7 +6,7 @@
 
 :root {
     /* Shared corner treatment so cards, inputs, buttons, and photos all read as one family */
-    --organic-radius: 20px 8px 20px 8px;
+    --organic-radius: 20px;
 }
 
 body {
@@ -24,13 +24,6 @@ h1, h2 {
     font-weight: 700;
     color: #3a5a40;
     text-align: center;
-}
-
-h1::after {
-    content: "🌿";
-    display: block;
-    font-size: 0.5em;
-    margin-top: 4px;
 }
 
 .form-container {
@@ -55,6 +48,11 @@ h1::after {
 .form-container input:focus {
     outline: 2px solid #3a5a40;
     outline-offset: 1px;
+}
+
+.form-container button {
+    margin-top: 12px;
+    display: block;
 }
 
 .form-container button,
