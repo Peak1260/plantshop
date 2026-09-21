@@ -89,10 +89,6 @@ h1, h2 {
     margin-bottom: 2px;
 }
 
-.product h3::before {
-    content: "🪴 ";
-}
-
 .product p {
     margin: 5px 0;
 }
