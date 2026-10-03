@@ -42,9 +42,9 @@ function displayProducts(products) {
             .join('');
 
         productElement.innerHTML = `
-            <h3>${product.name}</h3>
-            <p>${product.description}</p>
-            <p>$${product.price}</p>
+            <h2>${product.name}</h2>
+            <p>Purchase Date: ${product.description}</p>
+            <p>Original Price: $${product.price}</p>
             <div class="product-images">${imagesHtml}</div>
             <div class="product-actions">
                 <button onclick="confirmDeleteProduct('${product.productId}', '${escapeForAttribute(product.name)}')">Remove Plant</button>
