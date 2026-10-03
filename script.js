@@ -42,7 +42,7 @@ function displayProducts(products) {
             .join('');
 
         productElement.innerHTML = `
-            <h2>${product.name}</h2>
+            <h3>${product.name}</h3>
             <p>Purchase Date: ${product.description}</p>
             <p>Original Price: $${product.price}</p>
             <div class="product-images">${imagesHtml}</div>
